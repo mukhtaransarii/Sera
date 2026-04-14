@@ -1,0 +1,30 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@font-face {
+  font-family: 'Aref';
+  src: url('/Aref.ttf');
+}
+
+@font-face {
+  font-family: 'ClashDisplay';
+  src: url('/ClashDisplay-Regular.woff');
+}
+
+* {
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* IE / Edge */
+}
+
+*::-webkit-scrollbar {
+  display: none;                /* Chrome / Safari */
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  20%       { transform: scale(1.25); }
+}
+
+.animate-breathe {
+  animation: breathe 1.2s ease-in-out infinite;
+}
