@@ -1,19 +1,19 @@
-import { ArrowRight, PenLine, Search, HelpCircle, Code2, MessageCircle, Sparkles, Zap, Star, Cpu, Bot, Feather } from 'lucide-react'
+import { ArrowRight, PenLine, Search, HelpCircle, Code2, MessageCircle, Zap, Star, Cpu, Bot, Feather } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+//import { useEffect, useState } from 'react'
 import { LogoWithText } from '../components/Logo'
 
 export default function Home() {
   const navigate = useNavigate()
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  // const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY })
-    }
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [])
+  // useEffect(() => {
+  //   const handleMouseMove = (e: MouseEvent) => {
+  //     setMousePosition({ x: e.clientX, y: e.clientY })
+  //   }
+  //   window.addEventListener('mousemove', handleMouseMove)
+  //   return () => window.removeEventListener('mousemove', handleMouseMove)
+  // }, [])
 
   return (
     <div className="min-h-screen bg-linear-to-br from-emerald-50 via-white to-teal-50/30 dark:from-emerald-950/20 dark:via-slate-950 dark:to-teal-950/20 font-['ClashDisplay'] overflow-x-hidden">
