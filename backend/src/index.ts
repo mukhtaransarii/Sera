@@ -13,4 +13,8 @@ app.use(express.json());
 app.get("/", (req, res) => res.json({msg: "Ai server res active"}));
 app.use("/api", chatRoutes);
 
-app.listen(process.env.PORT, () => console.log("Server running on port 3000"));
+export default app; // for vercel
+
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(3000, () => console.log('Running on http://localhost:3000'));
+}
