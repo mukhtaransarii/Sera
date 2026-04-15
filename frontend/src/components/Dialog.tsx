@@ -54,8 +54,8 @@ export default function Dialog() {
          className="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none resize-none focus:ring-1 focus:ring-black"
         />
         <div className="flex items-center justify-end gap-3">
-          <button onClick={cancelDialog} className="text-xs bg-gray-50 px-4 py-2 rounded-lg hover:bg-gray-100">Cancel</button>
-          <button onClick={saveDialog} className="text-xs bg-black text-white px-4 py-2 rounded-lg">Save</button>
+          <button onClick={cancelDialog} className="cursor-pointer text-xs bg-gray-50 px-4 py-2 rounded-lg hover:bg-gray-100">Cancel</button>
+          <button onClick={saveDialog} className="cursor-pointer text-xs bg-black text-white px-4 py-2 rounded-lg">Save</button>
         </div>
       </DialogWrapper>
       
@@ -77,8 +77,8 @@ export default function Dialog() {
         </div>
         {apiError && <p className="text-xs text-red-500">{apiError}</p> }
         <div className="flex items-center justify-end gap-3">
-          <button onClick={cancelDialog} className="text-xs bg-gray-50 px-4 py-2 rounded-lg hover:bg-gray-100">Cancel</button>
-          <button onClick={saveDialog} className="text-xs bg-black text-white px-4 py-2 rounded-lg">Save</button>
+          <button onClick={cancelDialog} className="cursor-pointer text-xs bg-gray-50 px-4 py-2 rounded-lg hover:bg-gray-100">Cancel</button>
+          <button onClick={saveDialog} className="cursor-pointer text-xs bg-black text-white px-4 py-2 rounded-lg">Save</button>
         </div>
       </DialogWrapper>
     </>

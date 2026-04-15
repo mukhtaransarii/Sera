@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { MODELS } from '../constants/models'
 
-export default function InputBox({ inputValue, setInputValue, handleSend, model, setModel, activeMessages }: any) {
+export default function InputBox({ inputValue, setInputValue, handleSend, handleAbort, model, setModel, activeMessages, isLoading }: any) {
   const ref = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
@@ -36,10 +36,22 @@ export default function InputBox({ inputValue, setInputValue, handleSend, model,
             ))}
           </select>
 
-          <button onClick={handleSend} className="bg-black rounded-full p-1.5 cursor-pointer hover:bg-zinc-600 disabled:opacity-50" disabled={!inputValue}>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4 text-white">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
-            </svg>
+          <button
+            onClick={isLoading ? handleAbort : handleSend}
+            className={`rounded-full p-1.5 cursor-pointer hover:bg-zinc-600 disabled:opacity-50 ${
+              isLoading ? 'bg-red-500' : 'bg-black'
+            }`}
+            disabled={!inputValue && !isLoading}
+          >
+            {isLoading ? (
+              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="size-4 text-white">
+                <rect x="6" y="6" width="12" height="12" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4 text-white">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
+              </svg>
+            )}
           </button>
         </div>
       </div>

@@ -14,10 +14,12 @@ export default function SideBar() {
   const { chats, deleteChat, renameChat } = useChatStore();
   const navigate = useNavigate();
 
+  const hasApiKey = !!localStorage.getItem('apiKey');
+
   const OPTIONS = [
-    { name: 'New Chat', icon: <Plus strokeWidth={0.8} size={20} className='bg-gray-100 p-0.5 rounded-full' />, action: () => navigate('/chat') },
+    { name: 'New Chat', icon: <Plus strokeWidth={0.8} size={20} className='bg-gray-200 p-0.5 rounded-full' />, action: () => navigate('/chat') },
     { name: 'System Prompt', icon: <Settings strokeWidth={0.8} size={16} />, action: () => setSearchParams({ dialog: 'systemPrompt' }) },
-    { name: 'Add API Key', icon: <KeyRound strokeWidth={0.8} size={16} />, action: () => setSearchParams({ dialog: 'apiKey' }) },
+    { name: hasApiKey ? 'API Key Active' : 'Add API Key', icon: <KeyRound strokeWidth={0.8} size={16} className={hasApiKey ? 'text-green-700' : ''}/>, action: () => setSearchParams({ dialog: 'apiKey' }) },
   ]
   
   return (
@@ -53,8 +55,14 @@ export default function SideBar() {
         {/* OPTIONS */}
         <div>
           {OPTIONS.map((option) => (
-            <button key={option.name} onClick={option.action} className="w-full flex items-center gap-2 text-sm hover:bg-gray-100 p-2 rounded cursor-pointer">
-              {option.icon}<span>{option.name}</span>
+            <button 
+              key={option.name} onClick={option.action} 
+              className="w-full flex items-center gap-2 font-light text-sm hover:bg-gray-100 p-2 rounded cursor-pointer"
+            >
+              {option.icon}
+              <span className={option.name.includes('API Key') && hasApiKey ? 'text-green-600 font-medium' : ''}>
+                {option.name}
+              </span>
             </button>
           ))}
         </div>

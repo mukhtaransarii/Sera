@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import type { Messages } from '../types/types'
 import MessageBubble from '../components/MessageBubble'
 import { Logo } from '../components/Logo'
@@ -15,7 +15,8 @@ export default function ChatScreen() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { chats,  createChat, updateChat } = useChatStore();
   const { id } = useParams();
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
+  const controllerRef = useRef<AbortController | null>(null)
 
   useEffect(() => {
     if (id && !chats.find(c => c.id === id)) navigate('/chat', { replace: true })
@@ -25,6 +26,12 @@ export default function ChatScreen() {
 
   const handleSend = async () => {
     if (!inputValue.trim()) return
+    
+    // 🔥 cancel previous request if exists
+    controllerRef.current?.abort()
+
+    const controller = new AbortController()
+    controllerRef.current = controller;
 
     const chatId = id ?? createChat([], inputValue.slice(0, 40));
     if (!id) navigate(`/chat/${chatId}`, { replace: true })
@@ -36,16 +43,22 @@ export default function ChatScreen() {
     
     const apiKey = localStorage.getItem('apiKey') || '';
     const systemPrompt = localStorage.getItem('systemPrompt') || '';
- 
-    let streamed = ''
-    await genAiResponse(inputValue, activeMessages, model, systemPrompt, apiKey,
-      (chunk) => { streamed += chunk; updateChat(chatId, [...base.slice(0, -1), { role: 'model', content: streamed }]) },
-      (err) => updateChat(chatId, [...base, { role: 'model', content: err, type: 'error' }])
-    )
-    setIsLoading(false)
+    let streamed = '';
+    try {
+      await genAiResponse(inputValue, activeMessages, model, systemPrompt, apiKey,
+        (chunk) => { streamed += chunk; updateChat(chatId, [...base.slice(0, -1), { role: 'model', content: streamed }]) },
+        (err) => updateChat(chatId, [...base, { role: 'model', content: err, type: 'error' }]),
+        controller.signal // 🔥 ADD THIS
+      )
+    } finally {
+      setIsLoading(false)
+    }
   }
-
-
+  
+  const handleAbort = () => {
+    controllerRef.current?.abort()
+  }
+  
   return (
     <div className="w-full h-full flex flex-col items-center gap-3 px-4 pt-4 bg-gray-50">
 
@@ -60,7 +73,16 @@ export default function ChatScreen() {
         )}
 
         {/* Input Box */}
-        <InputBox inputValue={inputValue} setInputValue={setInputValue} handleSend={handleSend} model={model} setModel={setModel}  activeMessages={activeMessages}/>
+        <InputBox 
+          inputValue={inputValue} 
+          setInputValue={setInputValue} 
+          handleSend={handleSend} 
+          handleAbort={handleAbort}
+          model={model} 
+          setModel={setModel}  
+          activeMessages={activeMessages}
+          isLoading={isLoading}
+        />
     </div>
   )
 }
