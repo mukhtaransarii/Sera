@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react'
 import { MODELS } from '../constants/models'
-import { Trash } from 'lucide-react'
 
 export default function InputBox({ inputValue, setInputValue, handleSend, handleAbort, model, setModel, activeMessages, isLoading }: any) {
   const ref = useRef<HTMLTextAreaElement>(null)
