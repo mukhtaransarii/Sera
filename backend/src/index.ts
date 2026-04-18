@@ -11,10 +11,12 @@ import userRouter from './routes/user'
 connectDd();
 app.use(express.json());
 app.use(cookieParse())
+
+const allowed = ["http://localhost:5173","https://sera-blue.vercel.app"];
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: (o, cb) => cb(null, !o || allowed.includes(o)),
   credentials: true
-}))
+}));
 
 app.get("/", (req, res) => res.json({msg: "Ai server res active"}));
 app.use('/auth', userRouter)
