@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { LogoWithText } from '../components/Logo'
-import { Plus, Settings, Trash, PencilLine, Save, Columns2, Square, KeyRound } from 'lucide-react'
-import { useChatStore } from '../context/useChats'
+import { Plus, Settings, Trash, PencilLine, Save, Columns2, Square, KeyRound, LogOut } from 'lucide-react'
+import { useChatStore } from '../context/useChat'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import Dialog from '../components/Dialog'
+import { useAuth } from '../context/useAuth'
 
 export default function SideBar() {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false) 
@@ -13,9 +14,9 @@ export default function SideBar() {
   
   const { chats, deleteChat, renameChat } = useChatStore();
   const navigate = useNavigate();
-
+  const { user, logout } = useAuth();
+  
   const hasApiKey = !!localStorage.getItem('apiKey');
-
   const OPTIONS = [
     { name: 'New Chat', icon: <Plus strokeWidth={0.8} size={20} className='bg-gray-200 p-0.5 rounded-full' />, action: () => { setIsMobileNavOpen(false);  navigate('/chat') }},
     { name: 'System Prompt', icon: <Settings strokeWidth={0.8} size={16} />, action: () => { setIsMobileNavOpen(false); setSearchParams({ dialog: 'systemPrompt' }) }},
@@ -25,13 +26,15 @@ export default function SideBar() {
   return (
     <>
       {/* Sidebar Toggle for Mobile */}
-      <button className='fixed top-0 w-full md:hidden block px-4 pt-2'>
+      <button className='fixed right-0 top-0 w-full px-4 py-2 flex items-center justify-between'>
         <Columns2 
          strokeWidth={0.8} 
          size={28}  
-         className='bg-white p-1 rounded-sm shadow-sm'
+         className='bg-white p-1 rounded-sm shadow-sm md:hidden block'
          onClick={() => setIsMobileNavOpen(true)}
         />
+        <div className='flex-1'/>
+        <span onClick={() => navigate('/login')} className="bg-black px-1.5 py-1 text-sm text-white rounded-sm font-light shadow-sm auth-text cursor-pointer"></span>
       </button>
 
       {/* SideBar Desktop */}
@@ -75,12 +78,12 @@ export default function SideBar() {
 
           {chats.map((chat) => (
             <button
-              key={chat.id}
-              onClick={() => {navigate(`/chat/${chat.id}`); setIsMobileNavOpen(false)}}
+              key={chat._id}
+              onClick={() => {navigate(`/chat/${chat._id}`); setIsMobileNavOpen(false)}}
               className="w-full flex items-center justify-between gap-2 text-sm hover:bg-gray-100 px-2 py-1.5 rounded cursor-pointer group"
             > 
               {/* Title, If editingId show input else show title */}
-              {chat.id === editingId ? (
+              {chat._id === editingId ? (
                 <input
                   autoFocus
                   value={titleDraft}
@@ -93,25 +96,25 @@ export default function SideBar() {
               )}
 
               {/* Show Trash if not editingId */}
-              {chat.id !== editingId && (
+              {chat._id !== editingId && (
                 <Trash
                   strokeWidth={1}
                   size={20}
                   color={"red"}
                   className="shrink-0 bg-red-50 p-0.75 border border-red-200 rounded opacity-0 group-hover:opacity-100 transition-opacity"
-                  onClick={(e) => { e.stopPropagation(); deleteChat(chat.id) }}
+                  onClick={(e) => { e.stopPropagation(); deleteChat(chat._id) }}
                 />
               )}
               
               {/* Show Save if editingId else show Pencil */}
-              {chat.id === editingId ? (
+              {chat._id === editingId ? (
                 <Save 
                   strokeWidth={0.75} 
                   size={20}
                   color={"green"}
                   onClick={(e) => {
                     e.stopPropagation()
-                    renameChat(chat.id, titleDraft.trim())
+                    renameChat(chat._id, titleDraft.trim())
                     setEditingId(null)
                   }}
                   className="shrink-0 bg-green-50 p-0.75 border border-green-200 rounded"
@@ -124,7 +127,7 @@ export default function SideBar() {
                   className="shrink-0 bg-blue-50 p-0.75 border border-blue-200 rounded opacity-0 group-hover:opacity-100 transition-opacity"
                   onClick={(e) => {
                     e.stopPropagation()
-                    setEditingId(chat.id)
+                    setEditingId(chat._id)
                     setTitleDraft(chat.title)
                   }}
                 />
@@ -132,9 +135,22 @@ export default function SideBar() {
             </button>
           ))}
         </div>
+
+        {/* Logout */}
+        {user && 
+          <div className='relative group'>
+            <button 
+              onClick={logout}
+              className="w-full flex items-center gap-2 font-light text-sm hover:bg-red-100 p-2 rounded cursor-pointer"
+            >
+              <LogOut strokeWidth={1} size={16} color={"red"} /> Logout
+            </button>
+            <span className="tooltip">😭 Please don't Logout</span>
+          </div>
+        }
       </aside>
       
-      
+      {/* Dialog Call Once */}
       <Dialog />
     </>
   )

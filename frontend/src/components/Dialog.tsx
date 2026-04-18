@@ -1,7 +1,7 @@
 import { useSearchParams } from 'react-router-dom'
 import { useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
-import { validateApiKey } from '../config/api'
+import { validateApiKey } from '../config/api.chat'
 
 export default function Dialog() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -59,7 +59,7 @@ export default function Dialog() {
   return (
     <>
      {/* System Prompt Dialog */}
-     <DialogWrapper title="System Prompt" params="systemPrompt"> 
+     <DialogWrapper title="System Prompt" note="System prompt applies to gemini models only." params="systemPrompt"> 
         <textarea 
          placeholder="Write Your Custom System Prompt..."
          rows={5}
@@ -72,7 +72,7 @@ export default function Dialog() {
           <button onClick={saveDialog} className="cursor-pointer text-xs bg-green-700 text-white px-4 py-2 rounded-lg">Save</button>
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-2 gap-2">
           {PROMPT_SUGGESTIONS.map((s, i) => (
             <button
               key={i}
@@ -116,14 +116,18 @@ export default function Dialog() {
 }
 
 
-function DialogWrapper({ title, children, params }: any) {
+function DialogWrapper({ title, note, children, params }: any) {
   const [searchParams] = useSearchParams()
   const isOpen = searchParams.get('dialog') === params;
 
   return isOpen && (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/5 backdrop-blur-xs">
       <div className="relative w-full max-w-md bg-white rounded-xl shadow-lg p-4 flex flex-col gap-4">
-        <h2 className="text-xl font-bold font-[ClashDisplay] text-green-700">{title}</h2>
+        <div>
+          <h2 className="text-xl font-bold font-[ClashDisplay] text-green-700">{title}</h2>
+          {note && <p className="text-xs text-gray-500">{note}</p>}
+        </div>
+
         {children}
       </div>
     </div>

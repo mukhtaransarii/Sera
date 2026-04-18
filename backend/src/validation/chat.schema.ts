@@ -13,7 +13,7 @@ export const chatSchema = z.object({
   apiKey: z.string().nullable().optional()
 });
 
-export const titleSchema = z.object({
+export const createNewChatSchema = z.object({
   message: z.string().min(1).max(100000),
   history: z.array(
     z.object({
@@ -21,6 +21,7 @@ export const titleSchema = z.object({
       content: z.string(),
     })
   ),
+  guestId: z.string().optional(),
   model: z.string().optional(),
   apiKey: z.string().nullable().optional()
 });

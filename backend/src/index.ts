@@ -1,16 +1,23 @@
-import dotenv from 'dotenv'
-dotenv.config()
+import "dotenv/config"
 import express from "express";
+const app = express();
+import cookieParse from 'cookie-parser'
+import { connectDd } from './config/db'
+
 import chatRoutes from "./routes/chat";
 import cors from 'cors'
+import userRouter from './routes/user'
 
-const app = express();
-app.use(cors({
-  origin: "*", // for testing only
-}));
+connectDd();
 app.use(express.json());
+app.use(cookieParse())
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}))
 
 app.get("/", (req, res) => res.json({msg: "Ai server res active"}));
+app.use('/auth', userRouter)
 app.use("/api", chatRoutes);
 
 export default app; // for vercel

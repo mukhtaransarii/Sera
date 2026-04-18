@@ -1,25 +1,30 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* Fonts */
 @font-face {
   font-family: 'Aref';
   src: url('/Aref.ttf');
+  font-display: swap;
 }
 
 @font-face {
   font-family: 'ClashDisplay';
   src: url('/ClashDisplay-Regular.woff');
+  font-display: swap;
 }
 
+/* Scroll hide global */
 * {
-  scrollbar-width: none;        /* Firefox */
-  -ms-overflow-style: none;     /* IE / Edge */
+  scrollbar-width: none;      
+  -ms-overflow-style: none;  
 }
 
 *::-webkit-scrollbar {
-  display: none;                /* Chrome / Safari */
+  display: none; 
 }
 
+/* Breathe animation on logo */
 @keyframes breathe {
   0%, 100% { transform: scale(1); }
   20%       { transform: scale(1.25); }
@@ -29,8 +34,24 @@
   animation: breathe 1.2s ease-in-out infinite;
 }
 
+/* Tooltip */
 .tooltip {
   @apply absolute left-full top-1/2 -translate-y-1/2 ml-2
    text-xs bg-black text-white px-2 py-1 rounded 
    opacity-0 group-hover:opacity-100 transition whitespace-nowrap pointer-events-none;
+}
+
+/* Auth text animation */
+.auth-text::after {
+  content: "Login";
+  animation: swap 5s infinite;
+}
+
+@keyframes swap {
+  0%, 45% {
+    content: "Login";
+  }
+  50%, 100% {
+    content: "Signup";
+  }
 }
