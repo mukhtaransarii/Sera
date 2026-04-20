@@ -5,7 +5,7 @@ import InputBox from '../components/InputBox'
 import LoginPopup from '../components/PopupLogin'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { useChatStore } from '../context/useChat'
-import { defaultModel } from '../constants/models'
+import { defaultModel, MODELS } from '../constants/models'
 import { Logo } from '../components/Logo'
 
 export default function ChatScreen() {
@@ -14,6 +14,12 @@ export default function ChatScreen() {
   const { chats, streaming, newChatId, sendMessage, loadChat } = useChatStore()
   const navigate = useNavigate()
   const { id } = useParams()
+
+  useEffect(() => {
+    const savedModel = localStorage.getItem('model')
+    const isValid = MODELS.some(m => m.value === savedModel)
+    if (!isValid) localStorage.setItem('model', defaultModel)
+  }, [])
 
   // source of truth — match URL param to chat
   const messages = chats.find(c => c._id === id)?.messages ?? []
