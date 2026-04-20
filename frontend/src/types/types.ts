@@ -14,9 +14,19 @@ export type Chat = {
 
 export type ChatStore = {
   chats: Chat[]
-  currentChatId: string | null
   streaming: boolean
-  sendMessage: (message: string, guestId: string, model: string, apiKey: string, systemPrompt: string, signal?: AbortSignal) => Promise<void>
+  newChatId: string | null 
+  
+  sendMessage: (
+    message: string, 
+    guestId: string, 
+    model: string, 
+    apiKey: string, 
+    systemPrompt: string, 
+    currentChatId: string | null, 
+    signal?: AbortSignal
+  ) => Promise<void>
+
   loadChat: () => void
   deleteChat: (chatId: string) => void
   renameChat: (chatId: string, title: string) => void

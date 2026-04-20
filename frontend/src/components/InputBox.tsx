@@ -20,7 +20,7 @@ export default function InputBox({ inputValue, setInputValue, handleSend, handle
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={(e) => {
-           const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent)
+            const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent)
             if (e.key === 'Enter' && !e.shiftKey && !isMobile) {
               e.preventDefault()
               handleSend()

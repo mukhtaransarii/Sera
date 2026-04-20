@@ -5,7 +5,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import type { Messages } from '../types/types'
 import { Copy, CopyCheck } from 'lucide-react'
-import { Logo} from '../components/Logo'
+import { Logo} from './Logo'
 
 interface Props {
   messages: Messages

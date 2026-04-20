@@ -1,22 +1,18 @@
 // NOTE: do not change values, bcz its model of gemini api not random value
 export const MODELS = [
-  // Gemma Models
-  // { label: "Gemma 4 26B",           value: "gemma-4-26b",           rpm: 15, rpd: 1500 }, // Gemma
-  { label: "Gemma 3 27B",           value: "gemma-3-27b-it",        rpm: 30, rpd: 14400 }, // Gemma
-  { label: "Gemma 3 12B",           value: "gemma-3-12b-it",        rpm: 40, rpd: 19200 }, // Gemma
-  // { label: "Gemma 2B",               value: "gemma-2b",              rpm: 60, rpd: 28800 }, // Gemma - Faster, smaller
-  // { label: "Gemma 2B-it",            value: "gemma-2b-it",           rpm: 55, rpd: 26400 }, // Gemma - Italian version
+  // Fast & Efficient
+  { label: "Llama 3.1 8B",      value: "llama-3.1-8b-instant",                      rpm: 30, rpd: 14400 }, // fastest
+  { label: "GPT-OSS 20B",       value: "openai/gpt-oss-20b",                        rpm: 30, rpd: 14400 }, // fast reasoning
+  // { label: "Mixtral 8x7B",      value: "mixtral-8x7b-32768",                        rpm: 30, rpd: 14400 }, // multilingual
 
-  // Gemini Models
-  // { label: "Gemini 1.5 Pro",         value: "gemini-1.5-pro",        rpm: 40, rpd: 192000 }, // Gemini - Powerful, but potentially slower
-  // { label: "Gemini 1.5 Flash",        value: "gemini-1.5-flash",       rpm: 50, rpd: 240000 }, // Gemini - Faster than Pro
-  // { label: "Gemini 3.1 Flash Lite", value: "gemini-3.1-flash-lite", rpm: 25, rpd: 10000 }, // Gemini
-  // { label: "Gemini 3 Flash",        value: "gemini-3-flash",        rpm: 30, rpd: 12000 }, // Gemini
-  // { label: "Gemini 3.0 Pro",          value: "gemini-3.0-pro",         rpm: 35, rpd: 168000 }, // Gemini
-  { label: "Gemini 2.5 Flash Lite", value: "gemini-2.5-flash-lite", rpm: 20, rpd: 8000 }, // Gemini
-  { label: "Gemini 2.5 Flash",      value: "gemini-2.5-flash",      rpm: 15, rpd: 6000 }, // Gemini
-  // { label: "Gemini 2.0 Pro",          value: "gemini-2.0-pro",         rpm: 20, rpd: 96000 }, // Gemini
-  // { label: "Gemini Nano",             value: "gemini-nano",            rpm: 70, rpd: 336000 }, // Gemini - Very fast, smaller model
+  // Balanced
+  { label: "Llama 3.3 70B",     value: "llama-3.3-70b-versatile",                   rpm: 30, rpd: 1000  }, // best overall
+  { label: "Llama 4 Scout",     value: "meta-llama/llama-4-scout-17b-16e-instruct", rpm: 30, rpd: 1000  }, // vision + 512K ctx
+  { label: "Qwen3 32B",         value: "qwen/qwen3-32b",                            rpm: 30, rpd: 1000  }, // strong coder
+
+  // Reasoning
+  // { label: "DeepSeek R1 70B",   value: "deepseek-r1-distill-llama-70b",             rpm: 30, rpd: 1000  }, // reasoning
+  { label: "GPT-OSS 120B",      value: "openai/gpt-oss-120b",                       rpm: 30, rpd: 1000  }, // best reasoning
 ];
 
-export const defaultModel = "gemini-2.5-flash-lite";
+export const defaultModel = "llama-3.3-70b-versatile";

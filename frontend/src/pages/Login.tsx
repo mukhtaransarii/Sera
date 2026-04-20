@@ -15,7 +15,7 @@ export default function Login() {
   }
 
   return (
-    <div className="h-screen px-4 flex flex-col items-center justify-center gap-6 bg-gray-50">
+    <div className="h-screen px-4 flex flex-col items-center justify-center gap-6 bg-transparent">
       <div className="w-full max-w-md bg-white rounded-xl shadow-md p-4 flex flex-col gap-4">
 
         <h2 className="text-xl font-bold font-[ClashDisplay] text-green-700">Login</h2>

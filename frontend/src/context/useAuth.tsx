@@ -1,6 +1,7 @@
 import { create } from "zustand"
 import { login, logout, signup, me } from "../config/api.auth"
 import type { AuthState } from '../types/types'
+import { useChatStore } from '../context/useChat'
 
 
 export const useAuth = create<AuthState>((set) => ({
@@ -27,6 +28,7 @@ export const useAuth = create<AuthState>((set) => ({
     const data = await logout();
     if(!data) return
     set({ user: null })
+    useChatStore.getState().loadChat()
   },
 
   me: async () => {

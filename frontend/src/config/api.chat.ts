@@ -30,7 +30,7 @@ export const genAiResponse = async (
   message: string, // for genrating ai res
   history: Messages[], // for ai remember prev convo
   model: string, // optional important
-  apiKey: string | null, // optional
+  apiKey: string, // optional
   systemPrompt: string, // optional
   onChunk: (chunk: string) => void, // get stream
   onError: (error: string) => void, // get error 

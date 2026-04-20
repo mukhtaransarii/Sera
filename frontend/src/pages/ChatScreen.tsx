@@ -2,32 +2,33 @@ import { useState, useRef, useEffect } from 'react'
 import { useNavigate, useParams } from "react-router-dom"
 import MessageBubble from '../components/MessageBubble'
 import InputBox from '../components/InputBox'
+import LoginPopup from '../components/PopupLogin'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { useChatStore } from '../context/useChat'
 import { defaultModel } from '../constants/models'
+import { Logo } from '../components/Logo'
 
 export default function ChatScreen() {
   const [inputValue, setInputValue] = useState('')
   const [model, setModel] = useLocalStorage('model', defaultModel)
-  const { chats, currentChatId, streaming, sendMessage, loadChat } = useChatStore()
-
+  const { chats, streaming, newChatId, sendMessage, loadChat } = useChatStore()
   const navigate = useNavigate()
   const { id } = useParams()
 
+  // source of truth — match URL param to chat
   const messages = chats.find(c => c._id === id)?.messages ?? []
 
-  // load chats once on mount
+  // load once on mount
   useEffect(() => { loadChat() }, [])
 
-  // set currentChatId
+  // reactive — as soon as newChatId is set, navigate instantly
   useEffect(() => {
-    useChatStore.setState({ currentChatId: id ?? null })
-  }, [id])
+    if (newChatId) {
+      navigate(`/chat/${newChatId}`)
+      useChatStore.setState({ newChatId: null })
+    }
+  }, [newChatId])
 
-  // navigate as soon as a new chat is created
-  useEffect(() => {
-    if (currentChatId && !id) navigate(`/chat/${currentChatId}`)
-  }, [currentChatId])
 
   const controllerRef = useRef<AbortController | null>(null)
 
@@ -50,6 +51,7 @@ export default function ChatScreen() {
       model,
       apiKey,
       systemPrompt,
+      id ?? null,     // if no id, create new
       controllerRef.current.signal
     )
   }
@@ -63,6 +65,7 @@ export default function ChatScreen() {
           {messages.map((m, i) => (
             <MessageBubble key={i} messages={m} isStreaming={streaming && i === messages.length - 1} />
           ))}
+          {streaming && <span className='animate-pulse'><Logo /></span> }
         </div>
       )}
 
@@ -76,6 +79,8 @@ export default function ChatScreen() {
         activeMessages={messages}
         isLoading={streaming}
       />
+
+      <LoginPopup />
     </div>
   )
 }

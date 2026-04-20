@@ -1,7 +1,7 @@
 import { create } from "zustand"
 import { createNewChat, genAiResponse, fetchAllChats, saveChat, deleteChatApi, renameChatApi } from "../config/api.chat"
-import { useAuth } from '../context/useAuth'
-import type { ChatStore, Chat, Messages } from "../types/types"
+import { useAuth } from './useAuth'
+import type { ChatStore, Chat } from "../types/types"
 
 const updateLastMsg = (chats: Chat[], chatId: string, content: string): Chat[] =>
   chats.map(c =>
@@ -12,29 +12,21 @@ const updateLastMsg = (chats: Chat[], chatId: string, content: string): Chat[] =
 
 const isLoggedIn = () => !!useAuth.getState().user
 
-const persist = (chats: Chat[], chatId: string, messages: Messages[]) => {
-  if (isLoggedIn()) {
-    saveChat(chatId, messages)   // fire and forget
-  } else {
-    localStorage.setItem("guestChats", JSON.stringify(chats))
-  }
-}
-
 export const useChatStore = create<ChatStore>((set, get) => ({
   chats: [],
-  currentChatId: null,
   streaming: false,
+  newChatId: null,  // ← set when new chat created, ChatScreen watches and navigates
 
-  sendMessage: async (message, guestId, model, apiKey, systemPrompt, signal) => {
-    let { chats, currentChatId } = get()
-    let chat = chats.find(c => c._id === currentChatId) ?? null
+  sendMessage: async (message, guestId, model, apiKey, systemPrompt, currentChatId, signal) => {
+    let chat = get().chats.find(c => c._id === currentChatId) ?? null
 
     // 1. create chat if new
     if (!chat) {
       const data = await createNewChat(message, [], model, apiKey, guestId)
       if (!data) return
       chat = data.chat
-      set(s => ({ chats: [chat!, ...s.chats,], currentChatId: chat!._id }))
+      set(s => ({ chats: [chat!, ...s.chats], newChatId: chat!._id }))
+      // ↑ reactive — ChatScreen sees newChatId and navigates instantly
     }
 
     const chatId = chat!._id
@@ -57,29 +49,28 @@ export const useChatStore = create<ChatStore>((set, get) => ({
         streamed += chunk
         set(s => ({ chats: updateLastMsg(s.chats, chatId, streamed) }))
       },
-      (err) => {
-        set(s => ({ streaming: false, chats: updateLastMsg(s.chats, chatId, err) }))
-      },
+      (err) => set(s => ({ streaming: false, chats: updateLastMsg(s.chats, chatId, err) })),
       signal
     )
 
     // 4. persist
     set(s => {
       const updated = updateLastMsg(s.chats, chatId, streamed)
-      persist(updated, chatId, updated.find(c => c._id === chatId)?.messages ?? [])
+      isLoggedIn()
+        ? saveChat(chatId, updated.find(c => c._id === chatId)?.messages ?? [])
+        : localStorage.setItem("guestChats", JSON.stringify(updated))
       return { chats: updated, streaming: false }
     })
   },
 
   loadChat: async () => {
+    if (get().streaming) return
     try {
       if (isLoggedIn()) {
         const data = await fetchAllChats()
-        if (!data) return
-        set({ chats: data.chats })
+        if (data) set({ chats: data.chats })
       } else {
-        const chats = JSON.parse(localStorage.getItem("guestChats") ?? "[]")
-        set({ chats })
+        set({ chats: JSON.parse(localStorage.getItem("guestChats") ?? "[]") })
       }
     } catch {
       set({ chats: [] })
@@ -90,7 +81,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     set(s => {
       const updated = s.chats.filter(c => c._id !== chatId)
       isLoggedIn() ? deleteChatApi(chatId) : localStorage.setItem("guestChats", JSON.stringify(updated))
-      return { chats: updated, currentChatId: s.currentChatId === chatId ? null : s.currentChatId }
+      return { chats: updated }
     }),
 
   renameChat: (chatId, title) =>

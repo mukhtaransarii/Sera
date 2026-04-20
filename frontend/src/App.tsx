@@ -48,8 +48,6 @@ export default function App() {
               <>
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
-                {/* <Route path="/chat" element={<Navigate to="/login" replace />} />
-                <Route path="/chat/:id" element={<Navigate to="/login" replace />} /> */}
                 <Route path="/chat" element={<ChatScreen />} />
                 <Route path="/chat/:id" element={<ChatScreen />} />
               </>

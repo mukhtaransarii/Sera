@@ -4,15 +4,22 @@ export function useLocalStorage<T>(key: string, initial: T) {
   const [value, setValue] = useState<T>(() => {
     try {
       const stored = localStorage.getItem(key)
-      return stored ? JSON.parse(stored) : initial
+      if (stored === null) return initial
+      try {
+        return JSON.parse(stored)
+      } catch {
+        return stored as T  // plain string fallback
+      }
     } catch {
       return initial
     }
   })
 
   useEffect(() => {
-    if (value === null) {
-      localStorage.removeItem(key) // ✅ remove instead of storing "null"
+    if (value === null || value === undefined) {
+      localStorage.removeItem(key)
+    } else if (typeof value === 'string') {
+      localStorage.setItem(key, value)  // ← plain string, no JSON.stringify
     } else {
       localStorage.setItem(key, JSON.stringify(value))
     }
