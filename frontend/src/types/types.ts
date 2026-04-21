@@ -16,6 +16,14 @@ export type ChatStore = {
   chats: Chat[]
   streaming: boolean
   newChatId: string | null 
+  rateLimits: { 
+    limitRequests: string | null; 
+    limitTokens: string | null; 
+    remainingRequests: string | null; 
+    remainingTokens: string | null; 
+    resetRequests: string | null; 
+    resetTokens: string | null 
+  } | null
   
   sendMessage: (
     message: string, 
@@ -31,6 +39,7 @@ export type ChatStore = {
   deleteChat: (chatId: string) => void
   renameChat: (chatId: string, title: string) => void
 }
+
 
 export type User = {
   _id: string

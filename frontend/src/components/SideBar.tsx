@@ -56,7 +56,7 @@ export default function SideBar() {
   return (
     <>
       {/* Mobile Toggle */}
-      <div className='fixed right-0 top-0 w-full px-4 py-2 flex items-center justify-between gap-2'>
+      <div className='fixed right-0 top-0 w-full px-4 py-2 flex items-center justify-between  gap-2'>
         <Columns2
           strokeWidth={0.8}
           size={28}
@@ -66,7 +66,7 @@ export default function SideBar() {
 
         <div className='flex-1 hidden md:block' />
 
-        {!user && <span onClick={() => navigate('/login')} className='flex flex-col items-start px-2 py-px rounded border border-gray-600 cursor-pointer'>Login</span>}
+        {!user && <span onClick={() => navigate('/login')} className='flex flex-col items-start bg-white px-2 py-0.75 rounded-sm shadow-sm font-light cursor-pointer'>Login</span>}
       </div>
 
       {/* Sidebar */}

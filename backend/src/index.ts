@@ -15,7 +15,15 @@ app.use(cookieParse())
 const allowed = ["http://localhost:5173","https://sera-blue.vercel.app"];
 app.use(cors({
   origin: (o, cb) => cb(null, !o || allowed.includes(o)),
-  credentials: true
+  credentials: true,
+  exposedHeaders: [ 
+    'x-ratelimit-limit-requests',
+    'x-ratelimit-limit-tokens',
+    'x-ratelimit-remaining-requests', 
+    'x-ratelimit-remaining-tokens', 
+    'x-ratelimit-reset-requests',
+    'x-ratelimit-reset-tokens'
+  ]
 }));
 
 app.get("/", (req, res) => res.json({msg: "Ai server res active"}));

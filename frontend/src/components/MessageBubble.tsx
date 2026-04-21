@@ -57,9 +57,10 @@ function MessageBubble( { messages, isStreaming } : Props) {
           {!isStreaming &&
             <div className='flex flex-col'>
               {!isCopied && <Copy onClick={handleCopy} size={24} strokeWidth={0.8} className='p-1 rounded hover:bg-gray-100 cursor-pointer'/>}
-              {isCopied && <CopyCheck size={24} strokeWidth={0.8} className='p-1 rounded hover:bg-gray-100 cursor-pointer'/>}
+              {isCopied && <span className='text-green-700 flex items-center gap-1'><CopyCheck size={24} strokeWidth={0.8} className='p-1 rounded hover:bg-gray-100 cursor-pointer'/>Copied</span>}
               
-               <Logo/>
+
+              <Logo/>
             </div>
           }
 

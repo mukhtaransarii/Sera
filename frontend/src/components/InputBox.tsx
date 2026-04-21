@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { MODELS } from '../constants/models'
 
-export default function InputBox({ inputValue, setInputValue, handleSend, handleAbort, model, setModel, activeMessages, isLoading }: any) {
+export default function InputBox({ inputValue, setInputValue, handleSend, handleAbort, model, setModel, activeMessages, isLoading, rateLimits }: any) {
   const ref = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
@@ -66,6 +66,37 @@ export default function InputBox({ inputValue, setInputValue, handleSend, handle
           </div>
         </div>
       </div>
+
+      {/* Rate Limits */}
+      {rateLimits && (
+        <div className="flex gap-3 px-1 mt-1">
+          <div className="flex-1">
+            <div className="flex justify-between text-[10px] text-gray-400 mb-0.5">
+              <span>Requests/day</span>
+              <span>{rateLimits.remainingRequests} / {rateLimits.limitRequests}</span>
+            </div>
+            <div className="w-full bg-gray-100 rounded-full h-1">
+              <div
+                className="bg-green-500 h-1 rounded-full transition-all"
+                style={{ width: `${(Number(rateLimits.remainingRequests) / Number(rateLimits.limitRequests)) * 100}%` }}
+              />
+            </div>
+          </div>
+
+          <div className="flex-1">
+            <div className="flex justify-between text-[10px] text-gray-400 mb-0.5">
+              <span>Tokens/min</span>
+              <span>{rateLimits.remainingTokens} / {rateLimits.limitTokens}</span>
+            </div>
+            <div className="w-full bg-gray-100 rounded-full h-1">
+              <div
+                className="bg-blue-400 h-1 rounded-full transition-all"
+                style={{ width: `${(Number(rateLimits.remainingTokens) / Number(rateLimits.limitTokens)) * 100}%` }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <p className="text-xs text-gray-500 text-center py-2 font-light"><mark className='text-green-700 bg-transparent'>Sera</mark> can make mistakes, So study hard and make your own better LLM.</p>

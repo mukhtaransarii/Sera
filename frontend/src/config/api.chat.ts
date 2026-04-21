@@ -1,4 +1,5 @@
 import type { Messages } from '../types/types'
+import { useChatStore } from '../context/useChat'
 
 // 🔥 create new chat
 export const createNewChat = async (
@@ -34,7 +35,7 @@ export const genAiResponse = async (
   systemPrompt: string, // optional
   onChunk: (chunk: string) => void, // get stream
   onError: (error: string) => void, // get error 
-  signal?: AbortSignal // for cancel request
+  signal?: AbortSignal, // for cancel request
 ) => {
   try {
     const res = await fetch(`${import.meta.env.VITE_BACKEND_URI}/api/chat/genAiResponse`, {
@@ -49,6 +50,20 @@ export const genAiResponse = async (
       onError(err?.message ?? "Something went wrong.");
       return;
     }
+
+    // read rate limits from this request's headers
+    const rateLimits = {
+      limitRequests:     res.headers.get('x-ratelimit-limit-requests'),
+      limitTokens:     res.headers.get('x-ratelimit-limit-tokens'),
+      remainingRequests: res.headers.get('x-ratelimit-remaining-requests'),
+      remainingTokens:       res.headers.get('x-ratelimit-remaining-tokens'),
+      resetRequests:   res.headers.get('x-ratelimit-reset-requests'),
+      resetTokens:   res.headers.get('x-ratelimit-reset-tokens'),
+    }
+    if (rateLimits) {
+      useChatStore.setState({ rateLimits })
+    }
+    console.log(rateLimits)
 
     const reader = res.body!.getReader();
     const decoder = new TextDecoder();

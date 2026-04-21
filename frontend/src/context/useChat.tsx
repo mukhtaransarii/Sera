@@ -16,6 +16,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   chats: [],
   streaming: false,
   newChatId: null,  // ← set when new chat created, ChatScreen watches and navigates
+  rateLimits: null,
 
   sendMessage: async (message, guestId, model, apiKey, systemPrompt, currentChatId, signal) => {
     let chat = get().chats.find(c => c._id === currentChatId) ?? null

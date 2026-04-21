@@ -23,11 +23,11 @@ export default function LoginPopup() {
   
   useEffect(() => {
     if (isLoginPopupClosed || useAuth.getState().user) return
-    isSetAlertBoxOpen(true)
+    setTimeout(() => isSetAlertBoxOpen(true), 1500)
   }, [])
 
   return isAlertBoxOpen && (
-    <div className="fixed z-50 inset-0 flex flex-col items-center justify-center gap-6 bg-black/20">
+    <div className="fixed z-50 inset-0 flex flex-col items-center justify-center gap-6 px-4 bg-black/20">
       <div className="w-full max-w-md">
 
         {/* login */}

@@ -11,30 +11,28 @@ import { Logo } from '../components/Logo'
 export default function ChatScreen() {
   const [inputValue, setInputValue] = useState('')
   const [model, setModel] = useLocalStorage('model', defaultModel)
-  const { chats, streaming, newChatId, sendMessage, loadChat } = useChatStore()
+  const { chats, streaming, newChatId, sendMessage, loadChat, rateLimits } = useChatStore()
   const navigate = useNavigate()
   const { id } = useParams()
+  
+  // source of truth — match URL param to chat
+  const messages = chats.find(c => c._id === id)?.messages ?? []
 
   useEffect(() => {
+    loadChat()
+
+    // check if saved model is valid
     const savedModel = localStorage.getItem('model')
     const isValid = MODELS.some(m => m.value === savedModel)
     if (!isValid) localStorage.setItem('model', defaultModel)
   }, [])
 
-  // source of truth — match URL param to chat
-  const messages = chats.find(c => c._id === id)?.messages ?? []
-
-  // load once on mount
-  useEffect(() => { loadChat() }, [])
-
-  // reactive — as soon as newChatId is set, navigate instantly
   useEffect(() => {
     if (newChatId) {
       navigate(`/chat/${newChatId}`)
       useChatStore.setState({ newChatId: null })
     }
   }, [newChatId])
-
 
   const controllerRef = useRef<AbortController | null>(null)
 
@@ -57,7 +55,7 @@ export default function ChatScreen() {
       model,
       apiKey,
       systemPrompt,
-      id ?? null,     // if no id, create new
+      id ?? null,  
       controllerRef.current.signal
     )
   }
@@ -84,6 +82,7 @@ export default function ChatScreen() {
         setModel={setModel}
         activeMessages={messages}
         isLoading={streaming}
+        rateLimits={rateLimits}
       />
 
       <LoginPopup />
