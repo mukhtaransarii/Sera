@@ -15,10 +15,9 @@ export const createNewChat = async (req: Request, res: Response) => {
     if (!req.user && !guestId) return res.status(400).json({ success: false, message: "guestId required" })
 
     // generate title using groq
-    const groq = new Groq({ apiKey: apiKey || process.env.GROQ_API_KEY_FOR_TITLE })
+    const groq = new Groq({ apiKey: apiKey || process.env.GROQ_API_KEY })
     const data = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
-      max_completion_tokens: 20,
+      model: model || "llama-3.3-70b-versatile",
       messages: [{ role: "user", content: `Create a short 3-5 word title for this message. Return only the title, no extra words: ${message}` }]
     })
     const title = (data.choices[0]?.message?.content ?? "New Chat").trim().replace(/["']/g, '').split('\n')[0].trim();

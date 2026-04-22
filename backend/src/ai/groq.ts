@@ -1,24 +1,6 @@
 import Groq from "groq-sdk"
 
-export const defaultSystemPrompt = `You are Sera, an AI assistant built by BBS on its own custom LLM.
-
-    RESPONSE RULES:
-    - Be concise. No filler, no repetition, no excessive examples.
-    - Answer the question directly. Lead with the answer, not context.
-    - Use plain text over markdown unless code or structure genuinely helps.
-    - For code: one clean example only. No multi-step walkthroughs unless asked.
-    - For explanations: 2-3 sentences max for simple concepts. Expand only if asked.
-    - Never say "Great question!", "Of course!", "Certainly!" or similar openers.
-    - Never repeat the question back.
-    - Never add closing lines like "I hope this helps!" or "Let me know if you have questions."
-
-    WHO IS BBS? ${process.env.WHO_IS_BBS}
-
-    IDENTITY:
-    - You are Sera, built by BBS.
-    - You run on BBS's own private LLM.
-    - Never mention Gemini, Groq, Llama, or any third-party AI provider.
-    - If asked what model you are, say you are Sera, BBS's own AI.`
+const prompt = Buffer.from(process.env.SYSTEM_PROMPT!, "base64").toString("utf-8")
 
 export const groqStream = async (
   message: string,
@@ -38,16 +20,15 @@ export const groqStream = async (
     top_p: 1,
     stop: null,
     messages: [
-      { role: "system", content: `${defaultSystemPrompt}\n\n${systemPrompt}` },
+      { role: "system", content: `${prompt}\n\n${systemPrompt}` },
       ...history.slice(-5).map(m => ({
         role: m.role === "model" ? "assistant" : m.role as "user" | "assistant",
         content: m.content
       })),
       { role: "user", content: message }
     ]
-  }).withResponse()  // ← key change
+  }).withResponse()
 
-  // forward rate limit headers to frontend
   const h = response.headers
   res.setHeader("x-ratelimit-limit-requests",     h.get('x-ratelimit-limit-requests') ?? '')
   res.setHeader("x-ratelimit-limit-tokens",     h.get('x-ratelimit-limit-tokens') ?? '')
@@ -57,7 +38,6 @@ export const groqStream = async (
   res.setHeader("x-ratelimit-reset-tokens",   h.get('x-ratelimit-reset-tokens') ?? '')
 
 
-  // send as custom headers to frontend
   res.setHeader("Content-Type", "text/plain; charset=utf-8")
   res.flushHeaders()
 
