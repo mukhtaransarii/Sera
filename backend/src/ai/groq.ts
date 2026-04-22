@@ -20,7 +20,7 @@ export const groqStream = async (
     top_p: 1,
     stop: null,
     messages: [
-      { role: "system", content: `${prompt}\n\n${systemPrompt}` },
+      { role: "system", content: systemPrompt || prompt },
       ...history.slice(-5).map(m => ({
         role: m.role === "model" ? "assistant" : m.role as "user" | "assistant",
         content: m.content
