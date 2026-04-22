@@ -1,8 +1,11 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { MODELS } from '../constants/models'
+import { ChevronDown, ChevronUp, ArrowUp, Square } from 'lucide-react'
 
 export default function InputBox({ inputValue, setInputValue, handleSend, handleAbort, model, setModel, activeMessages, isLoading, rateLimits }: any) {
   const ref = useRef<HTMLTextAreaElement>(null)
+  const selected = MODELS.find(m => m.value === model)
+  const [openModel, setOpenModel] = useState(false)
 
   useEffect(() => {
     if (!ref.current) return
@@ -38,14 +41,28 @@ export default function InputBox({ inputValue, setInputValue, handleSend, handle
           </div> */}
 
           <div className='flex items-center gap-2'>
-            <select
-              value={model}
-              onChange={(e) => setModel(e.target.value)}
-              className="text-xs text-gray-500 border border-gray-200 rounded-lg px-2 py-1 focus:outline-none cursor-pointer"
-            >
-              {MODELS.map((m) => <option key={m.value} value={m.value}>{m.label}</option> )}
-            </select>
+            {/* Model DropDown */}
+            <div className='relative'>
+              <div onClick={() => setOpenModel(!openModel)} className='text-xs w-32 text-gray-500 flex items-center justify-between border border-gray-200 rounded-md px-2 py-1 cursor-pointer'>
+                {selected?.alias}
+                {!openModel ? <ChevronUp strokeWidth={0.8} size={16} /> :  <ChevronDown strokeWidth={0.8} size={16} /> }
+              </div>
 
+              <div className={`absolute bottom-full mb-2 w-full rounded-md p-1 shadow border border-gray-200 bg-white
+                transition-all duration-200 ease-out origin-bottom
+                ${openModel ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto' : 'opacity-0 translate-y-2 scale-95 pointer-events-none'}
+              `}>
+                {MODELS.map((m, i) => (
+                  <div key={i} onClick={() => { setModel(m.value); setOpenModel(false) }} 
+                    className={`flex flex-col px-2 py-1 rounded-md hover:bg-gray-100 cursor-pointer ${model === m.value ? 'bg-gray-100' : ''}`}>
+                    <span className='text-xs text-gray-700 font-light leading-none'>{m.alias}</span>
+                    <span className='text-[10px] text-gray-500 font-light'>{m.about}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            {/* Send Button */}
             <button
               onClick={isLoading ? handleAbort : handleSend}
               className={`rounded-full p-1.5 cursor-pointer hover:bg-zinc-600 disabled:opacity-50 ${
@@ -53,15 +70,7 @@ export default function InputBox({ inputValue, setInputValue, handleSend, handle
               }`}
               disabled={!inputValue && !isLoading}
             >
-              {isLoading ? (
-                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="size-4 text-white">
-                  <rect x="6" y="6" width="12" height="12" />
-                </svg>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4 text-white">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
-                </svg>
-              )}
+              {isLoading ? <Square strokeWidth={2} size={16} color='white'/> : <ArrowUp strokeWidth={2} size={16} color='white'/> }
             </button>
           </div>
         </div>
