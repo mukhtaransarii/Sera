@@ -36,7 +36,21 @@ function MessageBubble( { messages, isStreaming } : Props) {
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} my-2`}>
       
-      {isUser && <p className="max-w-[75%] text-sm bg-gray-50 border border-gray-200 text-black px-4 py-2 rounded-xl shadow-xs">{messages.content}</p>}
+      {/* {isUser && <p className="max-w-[75%] text-sm bg-gray-50 border border-gray-200 text-black px-4 py-2 rounded-xl shadow-xs">{messages.content}</p>} */}
+      
+      {isUser && (
+        <div className="max-w-[75%] flex flex-col items-end gap-1">
+          <p className="text-sm bg-gray-50 border border-gray-200 text-black px-4 py-2 rounded-xl shadow-xs">
+            {messages.content}
+          </p>
+
+          <div onClick={handleCopy} className="flex items-center gap-1 text-xs cursor-pointer p-1 rounded hover:bg-gray-200">
+            {isCopied ? <CopyCheck size={20} strokeWidth={0.8} className="text-green-700"/> : <Copy size={20} strokeWidth={0.8} />}
+            {isCopied && <span className="text-green-700">Copied</span>}
+          </div>
+        </div>
+      )}
+
       {isError && <p className="w-fit px-4 py-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg">{messages.content}</p>}
 
       {!isUser && !isError && (
@@ -58,8 +72,6 @@ function MessageBubble( { messages, isStreaming } : Props) {
             <div className='flex flex-col'>
               {!isCopied && <Copy onClick={handleCopy} size={24} strokeWidth={0.8} className='p-1 rounded hover:bg-gray-100 cursor-pointer'/>}
               {isCopied && <span className='text-green-700 flex items-center gap-1'><CopyCheck size={24} strokeWidth={0.8} className='p-1 rounded hover:bg-gray-100 cursor-pointer'/>Copied</span>}
-              
-
               <Logo/>
             </div>
           }
