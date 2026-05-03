@@ -16,7 +16,7 @@ export const groqStream = async (
     model: model || "llama-3.3-70b-versatile",
     stream: true,
     temperature: 0.5,
-    max_completion_tokens: 4096,
+    max_completion_tokens: 409600,
     top_p: 1,
     stop: null,
     messages: [
